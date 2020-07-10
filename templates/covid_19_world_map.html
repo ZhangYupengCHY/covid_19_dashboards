@@ -42,6 +42,7 @@
         width:300px;
         background-color:green;
         padding:0px;
+        height:800px;
     }
     .content{
         margin:20px;
@@ -51,7 +52,6 @@
         background-color:#222222;
         text-align:center;
         font-family:"微软雅黑";
-        text-align:center;
         padding-top:5px;
     }
     .total-confirmed-msg p{
@@ -61,8 +61,65 @@
         margin:0 auto;
         line-height:30px;
     }
+    .area-content{
+        height:515px;
+        background-color:#222222;
+        text-align:center;
+        font-family:"微软雅黑";
+        padding-top:5px;
+        margin-top:15px;
+    }
+    .area-content-text{
+         margin:15px;
+         text-align:center;
+         font-family:"微软雅黑";
+         font-size:20px;
+         color:white;
+    }
+    .country-content{
+         height:500px;
+         margin-top:15px;
+         font-family:"微软雅黑";
+         font-size:20px;
+         color:black;
+         overflow:auto;
+         background-color:#222222;
+         color:white;
+         text-align:center;
+    }
+    .country-content div{
+       height:40px;
+       text-align:center;
+       margin:0;
+       padding-top:5px;
+       border-bottom:2px solid green;
+    }
+    .country-content div strong{
+       height:40px;
+       text-align:center;
+    }
+    .time{
+       margin-top:10px;
+       text-align:center;
+       margin 0:auto;
+       color:black;
+       height:80px;
+       background-color:#222222;
+       padding-top:10px;
+    }
+    .time strong{
+        height:30px;
+        text-align:center;
+        margin:0px;
+        padding:0px;
+        line-height:30px;
+        font-size:20px;
+        font-family:"微软雅黑";
+        color:white;
+    }
 </style>
 <body>
+    <!--页面头部-->
     <div id="page-front">
         <img id="logo" src="{% static 'image/logo.png' %}" title="logo">
         COVID-19 Dashboard by the Arron Ramsey at YB-NETWORK
@@ -71,26 +128,41 @@
         </button>
     </div>
     <div class="content row">
+        <!--页面中部-->
         <div class="col-md-4 overview">
+            <!--页面中部,左侧,上面部分-->
             <div class="total-confirmed">
                 <div class="total-confirmed-msg">
                     <p style="color:white;font-size:20px;">Total Confirmed</p>
                     <strong style="color:red;font-size:50px;">3,053,328</strong>
                 </div>
             </div>
-            <div>
-                left-2
-            </div>
-            <div>
-                left-3
+            <!--页面中部,左侧,中间部分-->
+            <div class="area-content">
+                <div class="area-content-text">
+                    <p>Confirmed Case By</p>
+                    <p>Country/Region/Sovereignty</p>
+                </div>
+                <div class="country-content">
+                    {% for index,row_value in total_confirmed_info.iterrows %}
+                        <div>
+                            <strong>{{row_value.Country_Region}}</strong>
+                            <strong style="color:red">{{row_value.Difference}}</strong>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="time">
+                    <strong class="head">Last Update at(M/D/YYYY)</strong>
+                    <strong class="content">{{now_datetime}}</strong>
+                </div>
             </div>
         </div>
         <div class="col-md-4 map">
-            middle
-        </div>
+    middle
+</div>
         <div class="col-md-4 detail">
-            right
-        </div>
+    right
+</div>
     </div>
 </body>
 </html>

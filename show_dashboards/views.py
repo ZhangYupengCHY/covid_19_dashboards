@@ -3,6 +3,7 @@ import sys
 import os
 
 import pandas as pd
+from datetime import datetime
 import warnings
 from pyecharts.charts import Page
 from pyecharts.charts import Line
@@ -587,6 +588,13 @@ def plot_covid_19_world_situation(world_data):
 def show(requests):
     """
     绘制新冠疫情数据
+    绘制全球新冠疫情情况:
+        1. 包含新增确诊人数
+        2. 新增死亡人数
+        3. 累计确诊人数
+        4. 累计死亡人数
+        5. 累计检测人数
+        6. 全病例比例
     左侧概览:
         1.当前全球疫情情况汇总 (数字)
         2.当前全球疫情国家情况    (数字)
@@ -602,13 +610,127 @@ def show(requests):
 
     """
     # 加载数据
-    data = db_download_covid_19_data_primary_country()
+    world_data = db_download_covid_19_data_primary_country()
     # 初始化数据
-    init_data(data)
+    init_data(world_data)
     # 绘制地图
-    plot_map = plot_covid_19_world_situation(data).render_embed()
+    last_date = max(world_data['Date'])
+
+    # 1.全球单日新增确诊病例
+    now_date_confirmed_info = world_data[['Difference', 'Country_Region']][
+        (world_data[world_data.columns[0]] == 'Confirmed') & (world_data['Date'] == last_date)]
+    now_date_confirmed_info = now_date_confirmed_info.groupby(['Country_Region']).agg(
+        {'Difference': 'sum'}).reset_index()
+
+    # 2.全球单日新增死亡病例
+    now_date_deaths_info = world_data[['Difference', 'Country_Region']][
+        (world_data[world_data.columns[0]] == 'Deaths') & (world_data['Date'] == last_date)]
+    now_date_deaths_info = now_date_deaths_info.groupby(['Country_Region']).agg(
+        {'Difference': 'sum'}).reset_index()
+
+    # 3.全球总共确诊病例
+    total_confirmed_info = world_data[['Difference', 'Country_Region']][
+        world_data[world_data.columns[0]] == 'Confirmed']
+    total_confirmed_info = total_confirmed_info.groupby(['Country_Region']).agg(
+        {'Difference': 'sum'}).reset_index()
+
+
+    # 4.全球总共死亡病例
+    total_deaths_info = world_data[['Difference', 'Country_Region']][world_data[world_data.columns[0]] == 'Deaths']
+    total_deaths_info = total_deaths_info.groupby(['Country_Region']).agg(
+        {'Difference': 'sum'}).reset_index()
+
+    # 四种指标字典
+    # express_dict = {
+    #     'day_confirmed':
+    #         {
+    #             'data': now_date_confirmed_info,
+    #             'case_type': 'confirmed',
+    #             'date_type': 'day',
+    #         },
+    #     'day_deaths':
+    #         {
+    #             'data': now_date_deaths_info,
+    #             'case_type': 'deaths',
+    #             'date_type': 'day',
+    #         },
+    #     'total_confirmed':
+    #         {
+    #             'data': total_confirmed_info,
+    #             'case_type': 'confirmed',
+    #             'date_type': 'total',
+    #         },
+    #     'total_deaths':
+    #         {
+    #             'data': total_deaths_info,
+    #             'case_type': 'deaths',
+    #             'date_type': 'total',
+    #         },
+    # }
+
+    express_dict = {
+        'total_confirmed':
+            {
+                'data': total_confirmed_info,
+                'case_type': 'confirmed',
+                'date_type': 'total',
+            },
+    }
+
+    for name, info in express_dict.items():
+        data = info['data']
+        max_num = max(data['Difference'])
+        total_num = sum(data['Difference'])
+        data_pair = [(country, int(confirmed_num)) for country, confirmed_num in
+                     zip(data['Country_Region'],
+                         data['Difference'])]
+        express_dict[name]['max_num'] = max_num
+        express_dict[name]['total_num'] = total_num
+        express_dict[name]['data_pair'] = data_pair
+
+    # 初始化pages
+    pages = Page(page_title=f'全球{last_date}情况', layout=opts.PageLayoutOpts())
+
+    # 绘制地图
+    for plot_name, plot_data in express_dict.items():
+        # 初始化地图
+        map = Map(init_opts=opts.InitOpts(width='1000px', height='800px', bg_color="#000f1a"))
+
+        # 加载数据:其中maptype可以初始化地图类型,而geo中需要单独设置
+        if plot_data['case_type'] == 'confirmed':
+            case_name = '确诊'
+        else:
+            case_name = '死亡'
+        if plot_data['date_type'] == 'day':
+            date_type = '当日'
+        else:
+            date_type = '累计'
+        map.add(series_name=f'全球{last_date}{date_type}{case_name}人数分布', data_pair=plot_data['data_pair'],
+                maptype='world',
+                label_opts=opts.LabelOpts(is_show=False, color='white'),
+                # itemstyle_opts是设置每个项目中标注点的样式 area_color是设置项目的背景色,color是设置项目的点的颜色
+                itemstyle_opts=opts.ItemStyleOpts(area_color='#2a2a28', color="#d3d307"))
+
+        # 配置
+        map.set_global_opts(
+            title_opts=opts.TitleOpts(title=f'全球{last_date}{date_type}{case_name}人数分布',
+                                      subtitle=f"全球新增确诊:{plot_data['total_num']}",
+                                      title_textstyle_opts={'color': "white"}),
+        )
+
+        # 添加图形系列
+        pages.add(map)
+    # msg1:中间部位地图
+    plot_map = pages.render_embed()
     save_show_dashboards_name = 'covid_19_world_map.html'
     save_html_path = os.path.join(static_param.PROJECT_PATH,static_param.TEMPLATES_NAME,save_show_dashboards_name)
-    return render_to_response(save_html_path, locals())
+    # msg2:用于绘制地图左侧中间部位的数据:
+    # 包括国家以及国家对应的确诊人数
+    total_confirmed_info.sort_values(by=['Difference'],ascending=False,inplace=True)
+    total_confirmed_info = total_confirmed_info.head(100)
+    del world_data
+    gc.collect()
+    now_datetime = datetime.now().strftime('%m/%d/%Y %H:%M:%S %p')
 
+    return render_to_response(save_html_path, locals())
 
