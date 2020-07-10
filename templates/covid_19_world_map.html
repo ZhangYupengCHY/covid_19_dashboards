@@ -1,0 +1,96 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>covid_19_world_map</title>
+    <link rel="stylesheet" href=" {% static 'bootstrap-3.3.7-dist/css/bootstrap.css' %}">
+    <script src="{% static 'bootstrap-3.3.7-dist/js/jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.js' %}"></script>
+</head>
+<style>
+    body{
+        background-color:white;
+    }
+    #page-front{
+        height:55px;
+        background-color:#222222;
+        margin-top:20px;
+        margin-left:20px;
+        margin-right:20px;
+        line-height:50px;
+        font-family:Arial;
+        font-size:30px;
+        color:rgb(178,185,188);
+        padding-left:20px;
+        padding-right:20px;
+    }
+    #logo{
+        display: inline-block;
+        width:35px;
+        height:35px;
+        margin-right:10px;
+    }
+    #front-menu{
+        display: inline-block;
+        margin-right:20px;
+        margin-top:10px;
+        width:35px;
+        height:35px;
+    }
+    .overview{
+        width:300px;
+        background-color:green;
+        padding:0px;
+    }
+    .content{
+        margin:20px;
+    }
+    .total-confirmed{
+        height:120px;
+        background-color:#222222;
+        text-align:center;
+        font-family:"微软雅黑";
+        text-align:center;
+        padding-top:5px;
+    }
+    .total-confirmed-msg p{
+        margin:10px auto;
+    }
+    .total-confirmed-msg strong{
+        margin:0 auto;
+        line-height:30px;
+    }
+</style>
+<body>
+    <div id="page-front">
+        <img id="logo" src="{% static 'image/logo.png' %}" title="logo">
+        COVID-19 Dashboard by the Arron Ramsey at YB-NETWORK
+        <button id='front-menu' type="button" class="btn btn-default" style="float:right">
+            <span class="glyphicon glyphicon-menu-hamburger"></span>
+        </button>
+    </div>
+    <div class="content row">
+        <div class="col-md-4 overview">
+            <div class="total-confirmed">
+                <div class="total-confirmed-msg">
+                    <p style="color:white;font-size:20px;">Total Confirmed</p>
+                    <strong style="color:red;font-size:50px;">3,053,328</strong>
+                </div>
+            </div>
+            <div>
+                left-2
+            </div>
+            <div>
+                left-3
+            </div>
+        </div>
+        <div class="col-md-4 map">
+            middle
+        </div>
+        <div class="col-md-4 detail">
+            right
+        </div>
+    </div>
+</body>
+</html>
