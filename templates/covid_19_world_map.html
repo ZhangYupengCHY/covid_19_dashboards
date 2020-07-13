@@ -117,6 +117,116 @@
         font-family:"微软雅黑";
         color:white;
     }
+    .map, .detail{
+        background-color:gray;
+        height:825px;
+        margin-left:10px;
+        padding:0px;
+    }
+    .map-draw{
+        background-color:red;
+        height:700px;
+    }
+    .country-brief{
+        margin-top:10px;
+        background-color:green;
+        height:120px;
+    }
+    .counties-num{
+        background-color:yellow;
+        height:120px;
+        text-align:center;
+        border:2px solid green;
+        margin 0:auto;
+        line-height:40px;
+        padding-top:30px;
+    }
+    .counties-num strong{
+        height:60px;
+        text-align:center;
+        margin:0px;
+        padding:0px;
+        font-size:40px;
+        color:white;
+    }
+    .counties-num p{
+        height:0px;
+        text-align:center;
+        margin:0px;
+        padding:0px;
+        line-height:0px;
+        font-size:6px;
+        color:white;
+    }
+    .countries-summary{
+        background-color:blue;
+        height:120px;
+        border:2px solid green;
+        margin 0:auto;
+        line-height:25px;
+        overflow:auto;
+        font-size:25px;
+        color:white;
+    }
+    .countries-summary p{
+        text-indent:35px;
+    }
+    .death{
+        background-color:yellow;
+        height:600px;
+        text-align:center;
+        margin:0px;
+        padding:0px;
+    }
+    .death .col-md-6{
+        background-color:green;
+        height:600px;
+        border:2px solid red;
+        margin:0px;
+        padding:0px;
+    }
+    .death .col-md-6:first-child{
+        background-color:gold;
+    }
+    .death .col-md-6:last-child{
+        background-color:blue;
+    }
+    .global-death{
+        height:120px;
+        color:white;
+        background-color:green;
+        text-align:center;
+        padding-top:20px;
+    }
+    .global-death p{
+        font-size:20px;
+        line-height:20px;
+        height:20px;
+    }
+    .global-death strong{
+        font-size:60px;
+        line-height:60px;
+        height:60px;
+    }
+    .global-death-country{
+        overflow:auto;
+        height:470px;
+    }
+    .global-death-country div{
+        height:80px;
+        text-align:left;
+        border-bottom:2px solid white;
+        padding-top:10px;
+        padding-left:10px;
+    }
+    .global-death-country div p{
+        color:white;
+        font-size:25px;
+        height:30px;
+        line-height:30px;
+        padding:0px;
+        margin:0px;
+    }
 </style>
 <body>
     <!--页面头部-->
@@ -127,9 +237,9 @@
             <span class="glyphicon glyphicon-menu-hamburger"></span>
         </button>
     </div>
-    <div class="content row">
+    <div class="content">
         <!--页面中部-->
-        <div class="col-md-4 overview">
+        <div class="col-md-3 overview">
             <!--页面中部,左侧,上面部分-->
             <div class="total-confirmed">
                 <div class="total-confirmed-msg">
@@ -157,12 +267,71 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 map">
-    middle
-</div>
-        <div class="col-md-4 detail">
-    right
-</div>
+        <div class="col-md-6 map">
+            <div class="map-draw">
+                map-info
+            </div>
+            <div class="country-brief">
+                <div class="col-md-2 counties-num">
+                    <strong>{{country_num}}</strong>
+                    <p>countries/regions</p>
+                </div>
+                <div class="col-md-10 countries-summary">
+                    <p>Lancet Inf Dis Article: Here. Mobile Version: Here.</p>
+                    <p>Lead by JHU CSSE. Technical Support: Esri Living Atlas team and JHU APL. Financial Support: JHU and NSF. Resource support: Slack, Github and AWS. Click here to donate to the CSSE dashboard team, and other JHU COVID-19 Research Efforts. FAQ. Read more in this blog. Contact US.
+                    Data sources: WHO, CDC, ECDC, NHC, DXY, 1point3acres, Worldometers.info, the COVID Tracking Project (testing and hospitalizations), and city, county, state and national public health departments. Full list of sources available here.
+                    Downloadable database: GitHub: Here. Feature layer: Here.</p>
+                    <p>Confirmed cases include presumptive positive cases and probable cases, in accordance with CDC guidelines as of April 14.</p>
+                    <p>Death totals in the US include confirmed and probable, in accordance with CDC guidelines as of April 14.</p>
+                    <p>Recovered cases outside China are estimates based on local media reports, and state and local reporting when available, and therefore may be substantially lower than the true number. US state-level recovered cases are from COVID Tracking Project.
+                    Active cases = total confirmed - total recovered - total deaths.</p>
+                    <p>Incidence Rate = confirmed cases per 100,000 persons.</p>
+                    <p>Case-Fatality Ratio (%) = Number recorded deaths / Number confirmed cases.</p>
+                    <p>US Testing Rate: = total test results per 100,000 persons. The "total test results" are equal to "Total test results (Positive + Negative)" from COVID Tracking Project.</p>
+                    US Hospitalization Rate (%): = Total number hospitalized / Number confirmed cases. The "Total number hospitalized" is the "Hospitalized – Cumulative" count from COVID Tracking Project. The "hospitalization rate" and "Total number hospitalized" is only presented for those states which provide cumulative hospital data.
+                    Point level: County level (Admin0) - US; Province/State level (Admin1) - China, Canada, Australia, Germany, Italy, Spain, Mexico, Brazil, Chile; Country level (Admin2) - other countries. All points (except for Australia and Italy) shown on the map are based on geographic centroids, and are not representative of a specific address, building or any location at a spatial scale finer than a province/state. Australian and Italian dots are located at the centroid of the largest city in each state.
+                    Time Zones: lower-left corner indicator - your local time; lower-right corner plot - UTC.
+                   Note: All cases of COVID-19 in repatriated US citizens from the Diamond Princess are grouped together. These individuals have been assigned to various quarantine locations (in military bases and hospitals) around the US. This grouping is consistent with the CDC.
+                    *The names of locations included on the Website correspond with the official designations used by the U.S. Department of State. The presentation of material therein does not imply the expression of any opinion whatsoever on the part of JHU concerning the legal status of any country, area or territory or of its authorities. The depiction and use of boundaries, geographic names and related data shown on maps and included in lists, tables, documents, and databases on this website are not warranted to be error free nor do they necessarily imply official endorsement or acceptance by JHU.
+                    <p>Terms and Conditions of Website Use:</p>
+                    <p>This website and its contents herein, including all data, mapping, and analysis (“Website”), copyright 2020 Johns Hopkins University, all rights reserved, is provided solely for non-profit public health, educational, and academic research purposes. You should not rely on this Website for medical advice or guidance.
+                    Use of the Website by commercial parties and/or in commerce is strictly prohibited.   Redistribution of the Website or the aggregated data set underlying the Website is strictly prohibited.
+                    When linking to the website, attribute the Website as the COVID-19 Dashboard by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University.
+                    The Website relies upon publicly available data from multiple sources that do not always agree. The Johns Hopkins University hereby disclaims any and all representations and warranties with respect to the Website, including accuracy, fitness for use, reliability, completeness, and non-infringement of third party rights.
+                    Any use of the Johns Hopkins’ names, logos, trademarks, and/or trade dress in a factually inaccurate manner or for marketing, promotional or commercial purposes is strictly prohibited.
+                    These terms and conditions are subject to change.   Your use of the Website constitutes your acceptance of these terms and conditions and any future modifications thereof.</p>
+                    <p>Visit the Johns Hopkins Coronavirus Resource Center where our experts help to advance understanding of the virus, inform the public, and brief policymakers in order to guide a response,
+                    improve care, and save lives.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 detail">
+            <div class="death">
+                <div class="col-md-6">
+                    <div class="global-death">
+                        <p>Global deaths</p>
+                        <strong>{{global_death}}</strong>
+                    </div>
+                    <div class="global-death-country">
+                        {% for row,values in total_deaths_info.iterrows %}
+                            <div>
+                                <p>{{values.Difference}} Deaths</p>
+                                <p>{{values.Country_Region}}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="US-City-death">
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    12
+                </div>
+            </div>
+            <div>
+                2
+            </div>
+        </div>
     </div>
 </body>
 </html>
