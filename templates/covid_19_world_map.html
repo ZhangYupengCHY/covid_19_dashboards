@@ -10,11 +10,12 @@
 </head>
 <style>
     body{
-        background-color:white;
+        background-color:rgb(0,0,0);
+        overflow-y:hidden;
     }
     #page-front{
         height:55px;
-        background-color:#222222;
+        background-color:rgb(34,34,34);
         margin-top:20px;
         margin-left:20px;
         margin-right:20px;
@@ -40,7 +41,7 @@
     }
     .overview{
         width:300px;
-        background-color:green;
+        background-color:rgb(0,0,0);
         padding:0px;
         height:800px;
     }
@@ -49,7 +50,7 @@
     }
     .total-confirmed{
         height:120px;
-        background-color:#222222;
+        background-color:rgb(34,34,34);
         text-align:center;
         font-family:"微软雅黑";
         padding-top:5px;
@@ -62,15 +63,14 @@
         line-height:30px;
     }
     .area-content{
-        height:515px;
-        background-color:#222222;
+        height:510px;
+        background-color:rgb(34,34,34);
         text-align:center;
         font-family:"微软雅黑";
         padding-top:5px;
         margin-top:15px;
     }
     .area-content-text{
-         margin:15px;
          text-align:center;
          font-family:"微软雅黑";
          font-size:20px;
@@ -83,7 +83,7 @@
          font-size:20px;
          color:black;
          overflow:auto;
-         background-color:#222222;
+         background-color:rgb(34,34,34);
          color:white;
          text-align:center;
     }
@@ -92,7 +92,6 @@
        text-align:center;
        margin:0;
        padding-top:5px;
-       border-bottom:2px solid green;
     }
     .country-content div strong{
        height:40px;
@@ -103,8 +102,8 @@
        text-align:center;
        margin 0:auto;
        color:black;
-       height:80px;
-       background-color:#222222;
+       height:75px;
+       background-color:rgb(34,34,34);
        padding-top:10px;
     }
     .time strong{
@@ -118,25 +117,25 @@
         color:white;
     }
     .map, .detail{
-        background-color:gray;
+        background-color:rgb(0,0,0);
         height:825px;
         margin-left:10px;
         padding:0px;
     }
     .map-draw{
-        background-color:red;
+        background-color:rgb(34,34,34);
         height:700px;
     }
     .country-brief{
         margin-top:10px;
-        background-color:green;
-        height:120px;
+        background-color:rgb(34,34,34);
+        height:110px;
+        over-flow:hide;
     }
     .counties-num{
-        background-color:yellow;
-        height:120px;
+        background-color:rgb(34,34,34);
+        height:105px;
         text-align:center;
-        border:2px solid green;
         margin 0:auto;
         line-height:40px;
         padding-top:30px;
@@ -159,9 +158,8 @@
         color:white;
     }
     .countries-summary{
-        background-color:blue;
-        height:120px;
-        border:2px solid green;
+        background-color:rgb(34,34,34);
+        height:105px;
         margin 0:auto;
         line-height:25px;
         overflow:auto;
@@ -172,29 +170,28 @@
         text-indent:35px;
     }
     .death{
-        background-color:yellow;
+        background-color:rgb(34,34,34);
         height:600px;
         text-align:center;
         margin:0px;
         padding:0px;
     }
     .death .col-md-6{
-        background-color:green;
+        background-color:rgb(34,34,34);
         height:600px;
-        border:2px solid red;
         margin:0px;
         padding:0px;
     }
     .death .col-md-6:first-child{
-        background-color:gold;
+        background-color:rgb(34,34,34);
     }
     .death .col-md-6:last-child{
-        background-color:blue;
+        background-color:rgb(34,34,34);
     }
     .global-death{
         height:120px;
         color:white;
-        background-color:green;
+        background-color:rgb(34,34,34);
         text-align:center;
         padding-top:20px;
     }
@@ -215,7 +212,6 @@
     .global-death-country div{
         height:80px;
         text-align:left;
-        border-bottom:2px solid white;
         padding-top:10px;
         padding-left:10px;
     }
@@ -226,6 +222,19 @@
         line-height:30px;
         padding:0px;
         margin:0px;
+    }
+    .world-confirmed-line{
+        background-color:rgb(34,34,34);
+        text-align:center;
+        padding-left:40px;
+        padding-top:5px;
+        height:220px;
+    }
+    .total-confirmed,.time,.area-content-text,.country-content,.map-draw,.country-brief,.global-death,.global-death-country,.world-confirmed-line{
+        border:2px solid white;
+    }
+    .country-content div,.global-death-country div{
+       border-bottom:2px solid gray;
     }
 </style>
 <body>
@@ -316,20 +325,30 @@
                         {% for row,values in total_deaths_info.iterrows %}
                             <div>
                                 <p>{{values.Difference}} Deaths</p>
-                                <p>{{values.Country_Region}}</p>
+                                <p>{{values.Country}}</p>
                             </div>
                         {% endfor %}
                     </div>
-                    <div class="US-City-death">
-
-                    </div>
                 </div>
                 <div class="col-md-6">
-                    12
+                    <div class="global-death">
+                        <p>US State Level</p>
+                        <strong>Deaths</strong>
+                    </div>
+                    <div class="global-death-country">
+                        {% for row,values in us_city_deaths_total.iterrows %}
+                            <div>
+                                <p>{{values.Difference}} Deaths</p>
+                                <p>{{values.Combined_Key}} US</p>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
-            <div>
-                2
+            <div class="world-confirmed-line">
+                {% autoescape off %}
+                    {{ plot_world_confirmed_timing }}
+                {% endautoescape %}
             </div>
         </div>
     </div>

@@ -74,10 +74,23 @@ WSGI_APPLICATION = 'covid_19_dashboards.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
+# Database
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'covid_19',  #数据库名称
+        'USER':'root',         #数据库用户名
+        'PASSWORD':'chy910624',  #数据库密码
+        'HOST':'localhost',     #数据库主机，留空默认为localhost
+        'PORT':'3306',           #数据库端口
     }
 }
 

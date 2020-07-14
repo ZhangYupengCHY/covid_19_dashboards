@@ -1,4 +1,4 @@
-from django.shortcuts import render,render_to_response
+from django.shortcuts import render, render_to_response
 import sys
 import os
 
@@ -204,6 +204,7 @@ def init_data(data):
         1.将列名中空格去除
         2.修改列的数据类型
         3.空缺值替换
+        4.将Data转换成时间格式
     Args:
         data:pd.DataFrame
             原始数据
@@ -410,7 +411,13 @@ def init_data(data):
     # 无法正确识别的国家或地区(不在国家字典中)
     country = set(data['Country_Region'].values)
     wrong_name = country - set(en_name)
-   #  print(wrong_name)
+
+    # 将Data列修改成时间格式
+    data['Date'] = pd.to_datetime(data['Date'], dayfirst=False, yearfirst=False)
+    data['Date'] = [date.date() for date in data['Date']]
+
+
+#  print(wrong_name)
 
 
 def plot_covid_19_world_situation(world_data):
@@ -634,11 +641,11 @@ def show(requests):
     total_confirmed_info = total_confirmed_info.groupby(['Country_Region']).agg(
         {'Difference': 'sum'}).reset_index()
 
-
     # 4.全球总共死亡病例
     total_deaths_info = world_data[['Difference', 'Country_Region']][world_data[world_data.columns[0]] == 'Deaths']
     total_deaths_info = total_deaths_info.groupby(['Country_Region']).agg(
         {'Difference': 'sum'}).reset_index()
+    total_deaths_info.sort_values(by=['Difference'], ascending=False, inplace=True)
 
     # 四种指标字典
     # express_dict = {
@@ -723,14 +730,44 @@ def show(requests):
     # msg1:中间部位地图
     plot_map = pages.render_embed()
     save_show_dashboards_name = 'covid_19_world_map.html'
-    save_html_path = os.path.join(static_param.PROJECT_PATH,static_param.TEMPLATES_NAME,save_show_dashboards_name)
+    save_html_path = os.path.join(static_param.PROJECT_PATH, static_param.TEMPLATES_NAME, save_show_dashboards_name)
     # msg2:用于绘制地图左侧中间部位的数据:
     # 包括国家以及国家对应的确诊人数
-    total_confirmed_info.sort_values(by=['Difference'],ascending=False,inplace=True)
-    total_confirmed_info = total_confirmed_info.head(100)
-    del world_data
+    total_confirmed_info.sort_values(by=['Difference'], ascending=False, inplace=True)
+    total_confirmed_info = total_confirmed_info
     gc.collect()
     now_datetime = datetime.now().strftime('%m/%d/%Y %H:%M:%S %p')
+    # 一共的国家个数
+    country_num = total_confirmed_info.shape[0]
+    global_death = sum(total_deaths_info['Difference'].values)
+
+    # 美国确诊死亡人数
+    us_city_deaths_days = world_data[['Combined_Key', 'Difference']][
+        (world_data['Country_Region'] == 'United States') & (world_data['Case_Type'] == 'Deaths')]
+    us_city_deaths_total = us_city_deaths_days.groupby(by=['Combined_Key']).agg({'Difference': 'sum'}).reset_index()
+    us_city_deaths_total['Combined_Key'] = us_city_deaths_total['Combined_Key'].apply(
+        lambda x: x.split(',')[0] if ',' in x else x)
+    us_city_deaths_total.sort_values(by=['Difference'], ascending=False, inplace=True)
+
+    # 全球确诊病例随时间变化的曲线图
+    world_confirmed_timing = world_data[['Date', 'Cases']][world_data['Case_Type'] == 'Confirmed']
+    world_confirmed_timing = world_confirmed_timing.groupby(by=['Date']).agg({'Cases': 'sum'}).reset_index()
+    world_confirmed_timing.sort_values(by=['Cases'], ascending=True, inplace=True)
+    # 绘制折线图
+    line = Line(init_opts=opts.InitOpts(width='400px', height='250px'))
+    # x轴数据
+    line.add_xaxis(xaxis_data=list(world_confirmed_timing['Date']))
+
+    # y轴数据
+    world_confirmed_timing['show_Cases'] = [round(case/10000,2) for case in world_confirmed_timing['Cases']]
+    line.add_yaxis(series_name='', y_axis=list(world_confirmed_timing['show_Cases']), is_smooth=True,linestyle_opts=opts.LineStyleOpts(width=6,color='red'))
+
+    # 设置折线的全局变量
+    line.set_global_opts(title_opts=opts.TitleOpts(title="world confirmed changed",title_textstyle_opts={'color':'white','font_size':'10px'}),
+                         yaxis_opts=opts.AxisOpts(max_=800, interval=200,name='单位:million',axislabel_opts={'color':'white','font-size':'5px'},axisline_opts=opts.AxisLineOpts(linestyle_opts=opts.LineStyleOpts(width=2,color='white'))),
+                         xaxis_opts=opts.AxisOpts(axislabel_opts={'color':'white','font-size':'5px'},axisline_opts=opts.AxisLineOpts(linestyle_opts=opts.LineStyleOpts(width=2,color='white'))))
+
+    # 生成折线图
+    plot_world_confirmed_timing = line.render_embed()
 
     return render_to_response(save_html_path, locals())
-
