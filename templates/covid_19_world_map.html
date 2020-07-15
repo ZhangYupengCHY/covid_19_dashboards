@@ -278,7 +278,9 @@
         </div>
         <div class="col-md-6 map">
             <div class="map-draw">
-                map-info
+                {% autoescape off %}
+                    {{ plot_map }}
+                {% endautoescape %}
             </div>
             <div class="country-brief">
                 <div class="col-md-2 counties-num">

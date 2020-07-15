@@ -6,11 +6,12 @@ Created on:   2020/7/1 18:47
 
 """
 
+
 """
 常用的一些方法
 """
 from datetime import datetime
-
+import pandas as pd
 
 def run_time(func):
     """
@@ -28,3 +29,19 @@ def run_time(func):
         return result
 
     return wrapper
+
+
+def detect_df(df):
+    """
+    检验df的有效性:
+        是否为None或是为空
+    :param df: pd.DataFrame
+        需要检测的df
+    :return: None
+    """
+    if not isinstance(df,pd.DataFrame):
+        raise ValueError('ERROR TYPE.df is not DataFrame.')
+    if df is None:
+        raise ValueError('VALID VALUE.df is valid.')
+    if df.empty:
+        raise ValueError('EMPTY VALUE.df is empty')

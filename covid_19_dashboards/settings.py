@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'show_dashboards',
+    'covid_19_in_US',
 ]
 
 MIDDLEWARE = [

@@ -15,6 +15,9 @@ import os
 # 当前项目路径
 PROJECT_PATH = os.getcwd()
 
+# pkl数据存放路径
+COVID_19_DATA_PATH = r"D:\pyecharts\covid_19.pkl"
+
 print(PROJECT_PATH)
 
 # 模板名
