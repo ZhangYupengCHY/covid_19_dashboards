@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
+from pyecharts.charts.basic_charts.map import Map
+from pyecharts import options as opts
 
 # Create your views here.
 
@@ -50,6 +52,7 @@ def show_US_status(requests):
             raise ValueError('Cant get covid_19 origin data from local or database')
         return covid_19_all_origin_data
 
+
     # 1.加载数据源
     covid_19_origin_data = load_covid_origin_data()
     # 检查原始数据的有效性
@@ -71,6 +74,7 @@ def show_US_status(requests):
     for case_type in case_type_dict.values():
         states_timing_data_temp = covid_19_US_data[['Province_State', 'Cases', 'Date']][
             covid_19_US_data['Case_Type'] == case_type]
+        states_timing_data_temp = states_timing_data_temp.groupby(by=['Province_State','Date']).agg({'Cases':'sum'}).reset_index()
         states_timing_data_temp.sort_values(by=['Date', 'Cases'], ascending=[False, False], inplace=True)
         states_timing_data.append(states_timing_data_temp)
     states_confirmed_timing_data = states_timing_data[0]
@@ -95,8 +99,39 @@ def show_US_status(requests):
     now_date_US_all_confirmed = sum(now_date_states_status[0]['Cases'])
     now_date_US_all_deaths = sum(now_date_states_status[1]['Cases'])
     last_date_US_all_confirmed = sum(covid_19_US_data['Difference'][(covid_19_US_data['Date'] == last_date) & (
-                covid_19_US_data['Case_Type'] == case_type_dict['Confirmed'])])
+            covid_19_US_data['Case_Type'] == case_type_dict['Confirmed'])])
     last_date_US_all_deaths = sum(covid_19_US_data['Difference'][(covid_19_US_data['Date'] == last_date) & (
-                covid_19_US_data['Case_Type'] == case_type_dict['Deaths'])])
-    print(now_date_US_all_confirmed, now_date_US_all_deaths, last_date_US_all_confirmed, last_date_US_all_deaths)
+            covid_19_US_data['Case_Type'] == case_type_dict['Deaths'])])
 
+    # 绘制美国各州确诊情况图
+    # 加载数据
+    now_date_states_confirmed = now_date_states_status[0]
+    now_date_states_confirmed_sequence = [(states, confirmed) for states, confirmed in
+                                          zip(now_date_states_confirmed['Province_State'],
+                                              now_date_states_confirmed['Cases'])]
+
+
+    # 初始化地图
+    now_date_states_confirmed_map = Map(init_opts=opts.InitOpts(width='1000px', height='800px', bg_color="#000f1a"))
+
+    # 加载数据:其中maptype可以初始化地图类型,而geo中需要单独设置
+    now_date_states_confirmed_map.add(series_name='1', data_pair=now_date_states_confirmed_sequence, maptype='US',
+            label_opts=opts.LabelOpts(is_show=False))
+
+    # 配置
+    now_date_states_confirmed_map.set_global_opts(
+        # 视觉配置
+        visualmap_opts=opts.VisualMapOpts(
+            type_='color',
+        ),
+        tooltip_opts=opts.TooltipOpts(is_show=True)
+    )
+
+    # 保存现存美国确诊病例地图为Html中内嵌框架
+    # now_date_states_confirmed_map.render_embed()
+    # 输出为html
+    path = '123.html'
+    now_date_states_confirmed_map.render(path)
+    save_show_dashboards_name = 'covid_19_US_status.html'
+    save_html_path = os.path.join(static_param.PROJECT_PATH, static_param.TEMPLATES_NAME, save_show_dashboards_name)
+    return render_to_response(save_html_path, locals())
