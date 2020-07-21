@@ -3,7 +3,6 @@ from pyecharts.charts.basic_charts.map import Map
 from pyecharts import options as opts
 
 # Create your views here.
-
 # 绘制美国疫情情况
 """
     数据来源:
@@ -52,7 +51,6 @@ def show_US_status(requests):
             raise ValueError('Cant get covid_19 origin data from local or database')
         return covid_19_all_origin_data
 
-
     # 1.加载数据源
     covid_19_origin_data = load_covid_origin_data()
     # 检查原始数据的有效性
@@ -74,7 +72,8 @@ def show_US_status(requests):
     for case_type in case_type_dict.values():
         states_timing_data_temp = covid_19_US_data[['Province_State', 'Cases', 'Date']][
             covid_19_US_data['Case_Type'] == case_type]
-        states_timing_data_temp = states_timing_data_temp.groupby(by=['Province_State','Date']).agg({'Cases':'sum'}).reset_index()
+        states_timing_data_temp = states_timing_data_temp.groupby(by=['Province_State', 'Date']).agg(
+            {'Cases': 'sum'}).reset_index()
         states_timing_data_temp.sort_values(by=['Date', 'Cases'], ascending=[False, False], inplace=True)
         states_timing_data.append(states_timing_data_temp)
     states_confirmed_timing_data = states_timing_data[0]
@@ -110,28 +109,55 @@ def show_US_status(requests):
                                           zip(now_date_states_confirmed['Province_State'],
                                               now_date_states_confirmed['Cases'])]
 
+    # 获取美国感染人数最小的州的人数和感染人数最大的州的人数。
+    min_confirmed_states_num = min(now_date_states_confirmed['Cases'])
+    max_confirmed_states_num = max(now_date_states_confirmed['Cases'])
 
     # 初始化地图
-    now_date_states_confirmed_map = Map(init_opts=opts.InitOpts(width='1000px', height='800px', bg_color="#000f1a"))
+    now_date_states_confirmed_map = Map(
+        init_opts=opts.InitOpts(width='1000px', height='400px', bg_color='rgb(255,255,255)'))
+
 
     # 加载数据:其中maptype可以初始化地图类型,而geo中需要单独设置
-    now_date_states_confirmed_map.add(series_name='1', data_pair=now_date_states_confirmed_sequence, maptype='US',
-            label_opts=opts.LabelOpts(is_show=False))
+    now_date_states_confirmed_map.add(series_name='', data_pair=now_date_states_confirmed_sequence, maptype='美国',
+                                      label_opts=opts.LabelOpts(is_show=False),is_map_symbol_show=False)
+
+    # 地图图例分段标签
+    piece_num = 6000
+    pieces = []
+    for i in range(6):
+        if i!=5:
+            start_num = i*piece_num
+            end_num = (i+1)*piece_num
+            temp_set = {'min':start_num,"max":end_num,'label':f"{format(start_num,',')}至{format(end_num,',')}"}
+        else:
+            start_num = 5 * piece_num
+            temp_set = {'min': start_num,'label':f"大于{format(start_num,',')}"}
+        pieces.append(temp_set)
 
     # 配置
     now_date_states_confirmed_map.set_global_opts(
         # 视觉配置
         visualmap_opts=opts.VisualMapOpts(
+            is_show=True,
             type_='color',
+            min_=min_confirmed_states_num,
+            max_=30000,
+            is_piecewise=True,
+            # 分段显示
+            pieces=pieces,
+            range_color=['rgb(202,235,196)', 'rgb(4,103,172)'],
+            pos_right='0%',
+            pos_top='30%',
         ),
-        tooltip_opts=opts.TooltipOpts(is_show=True)
+        tooltip_opts=opts.TooltipOpts(trigger="item",formatter="{b}<br/>{c} (例)"),
     )
 
     # 保存现存美国确诊病例地图为Html中内嵌框架
     # now_date_states_confirmed_map.render_embed()
     # 输出为html
-    path = '123.html'
-    now_date_states_confirmed_map.render(path)
+    now_date_states_confirmed_map = now_date_states_confirmed_map.render_embed()
     save_show_dashboards_name = 'covid_19_US_status.html'
     save_html_path = os.path.join(static_param.PROJECT_PATH, static_param.TEMPLATES_NAME, save_show_dashboards_name)
     return render_to_response(save_html_path, locals())
+
