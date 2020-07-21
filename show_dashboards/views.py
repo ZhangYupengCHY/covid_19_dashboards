@@ -1,15 +1,16 @@
 from django.shortcuts import render, render_to_response
 import sys
 import os
-
-import pandas as pd
+import gc
 from datetime import datetime
 import warnings
+
+import pandas as pd
 from pyecharts.charts import Page
 from pyecharts.charts import Line
 from pyecharts.charts import Map
 from pyecharts import options as opts
-import gc
+
 
 from public_func import conn_db
 from public_func import public_function

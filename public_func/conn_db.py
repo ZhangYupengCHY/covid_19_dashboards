@@ -20,7 +20,7 @@ class ConnMysql(object):
     连接mysql数据库
     """
 
-    def __init__(self, host='localhost', port=3306, username='root', password='', database='covid_19'):
+    def __init__(self, host='localhost', port=3306, username='root', password='', database='covid-19'):
         """
         初始化连接MySQL数据
         """
