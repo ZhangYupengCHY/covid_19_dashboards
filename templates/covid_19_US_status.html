@@ -9,97 +9,211 @@
     <script src="{% static 'bootstrap-3.3.7-dist/js/bootstrap.js' %}"></script>
 </head>
 <style>
-    <!--清除内置样式-->
-    html, body, div, ul, li, h1, h2, h3, h4, h5, h6, p, dl, dt, dd, ol, form, input, textarea, th, td, select {
-        margin: 0;
-        padding: 0;
-    }
-    *{box-sizing: border-box;}
-    html, body {
-        min-height: 100%;
+    *{
+        margin:0;
+        padding:0;
     }
 
+    li{
+        list-style:none
+    }
+
+    img{
+        vertical-align:top;
+        border:none
+    }
     body {
-        font-family: "Microsoft YaHei";
-        font-size:14px;
-        color:#333;
+        background-color:rgb(255,255,255);
+        padding:80px 60px;
+        margin:0 auto;
     }
-    h1, h2, h3, h4, h5, h6{font-weight:normal;}
-    ul,ol {
-        list-style: none;
+    .head {
+        background-color:rgb(255,255,255);
     }
+    .content {
+        background-color:rgb(255,255,255);
+        height:1200px;
+        margin-top:20px;
+    }
+    .tail {
+        background-color:yellow;
+        height:400px;
+    }
+    .page-theme {
+        height:80px;
+        text-align:left;
+        line-height:80px;
+    }
+    .logo img{
+        width:80px;
+        height:60px;
+    }
+    .logo .organization-describe{
+        display:inline-block;
+        padding-top:
+        text-align:center;
+    }
+    .logo .organization-describe p{
+        margin:0px;
+        height:15px;
+    }
+    .page-theme{
+        font-size:25px;
+        height:60px;
+        line-height:60px;
+    }
+    .head .declare{
+        height:80px;
+        line-height:80px;
+    }
+    .well{
+        background-color:rgb(235,247,245);
+    }
+    #content-title{
+        margin-bottom:20px;
+    }
+    #content-title strong{
+        font-size:30px;
+    }
+    hr{
+        margin:0px;
+        height:2px;
+        border:none;
+        border-top:2px double rgb(244,244,244)
 
-    img {
-        border: none;
-        vertical-align: middle;
     }
-
-    a {
-        text-decoration: none;
-        color: #232323;
+    .brief{
+        padding:20px 20px;
+        height:120px;
     }
-
-    table {
-        border-collapse: collapse;
-        table-layout: fixed;
+    .brief .col-md-6{
+        height:80px;
+        text-align:center;
+        padding:10px 0px;
     }
-
-    input, textarea {
-        outline: none;
-        border: none;
+    .brief .info{
+       background-color:rgb(255,255,255);
     }
-
-    textarea {
-        resize: none;
-        overflow: auto;
+    .brief .info p{
+        margin:0px;
     }
-
-    .clearfix {
-        zoom: 1;
+    .brief .col-md-6:first-child{
+        background-color:rgb(235,247,245);
+        padding-right:20px;
     }
-
-    .clearfix:after {
-        content: ".";
-        width: 0;
-        height: 0;
-        visibility: hidden;
-        display: block;
-        clear: both;
-        overflow:hidden;
+    .brief .col-md-6:last-child{
+        background-color:rgb(235,247,245);
+        padding-left:20px;
     }
-
-    .fl {
-        float: left
+    .brief .info p:first-child{
+        font-size:15px;
+        font-family:Serif;
     }
-
-    .fr {
-        float: right
+    .brief .info p:nth-child(2){
+        font-size:20px;
+        font-weight:bold;
+        font-family:Serif;
+        color:rgb(0,124,124)
     }
-
-    .tl {
-        text-align: left;
+    .brief .info p:last-child{
+        font-size:8px;
+        font-family:Serif;
+        color:rgb(99,99,99);
     }
-
-    .tc {
-        text-align: center
+    .particular  p{
+        margin:0px;
+        margin-bottom:10px;
     }
-
-    .tr {
-        text-align: right;
+    .particular  .title h3{
+        font-size:25px;
+        margin-bottom:20px;
     }
-
-    .ellipse {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+    .particular  .describe h4{
+        font-size:20px;
+        margin-bottom:20px;
     }
-    .inline{
-        display: inline-block;
-        *display: inline;
-        *zoom: 1;
+    .image{
+        height:600px;
     }
 </style>
 <body>
+    <!--头部-->
+    <!--    头部分为三部分:
+                1.logo+组织描述
+                2.主页显示项
+                3.声明-->
+    <div class="col-md-2">
 
+    </div>
+    <div class="col-md-8">
+        <div class="head">
+            <div class="logo">
+                <!--使用相对路径-->
+                <img src="../static/image/logo.png" />
+                <div class="organization-describe">
+                    <p>Centers for Disease</p>
+                    <p>Control and Prevention</p>
+                </div>
+            </div>
+            <div class="page-theme">
+                <strong>2019年新型冠状病毒肺炎(COVID-19)</strong>
+            </div>
+            <div class="well">
+                <strong>免费申明: </strong><span>本网站持续更新。在所有内容翻译完成之前，其中一部分内容可能为英文。</span>
+            </div>
+        </div>
+        <hr>
+        <!--展示数据项 -->
+        <!--    展示区为每一块展示项,展示项结构为:
+            1.展示头
+            2.展示描述
+            3.图表-->
+        <div class="content">
+            <!--整个内容的标题-->
+            <div id="content-title">
+                <strong>美国病例数</strong>
+                <hr>
+                2020年7月16日更新
+            </div>
+            <!--对疫情的整体简介-->
+            <div class="brief well">
+                <div class="col-md-6">
+                    <div class="info">
+                        <p>病例总数</p>
+                        <p>3,355,457</p>
+                        <p>58,858个新增病例</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info">
+                        <p>总死亡病例</p>
+                        <p>135,235</p>
+                        <p>351个新增死亡病例</p>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!--具体项1:美国各省确诊病例-->
+            <div class="particular province-confirmed">
+                <div class="title">
+                    <h3>各辖区内的病例数据</h3>
+                </div>
+                <div class="describe">
+                    <h4>本地图显示了美国各州、哥伦比亚特区、纽约市和其他美国附属管辖区报告的COVID-19病例。将鼠标悬停在地图上，查看各管辖区报告的病例数。
+                    如需访问管辖区的卫生部门网站，请在地图上点击管辖区。</h4>
+                </div>
+                <div class="image">
+                    image
+                    {% autoescape off %}
+                        {{ now_date_states_confirmed_map }}
+                    {% endautoescape %}
+                </div>
+            </div>
+        </div>
+        <!--尾部-->
+        <div class="tail">
+            tail
+        </div>
+    </div>
 </body>
 </html>

@@ -16,8 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from show_dashboards import views as dashboards_views
+from covid_19_in_US import views as covid_19_in_US_views
 
 urlpatterns = [
     path('', dashboards_views.show),
-    path('dashboards/', dashboards_views.show),
+    path('us/', covid_19_in_US_views.show_US_status),
+
 ]
