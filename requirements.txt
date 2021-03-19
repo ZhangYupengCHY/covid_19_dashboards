@@ -1,6 +1,6 @@
 asgiref==3.2.10
 decorator==4.4.2
-Django==2.2.14
+Django==2.2.18
 h5py==2.10.0
 Jinja2==2.11.2
 langdetect==1.0.8
