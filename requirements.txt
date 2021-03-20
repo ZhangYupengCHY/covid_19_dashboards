@@ -2,7 +2,7 @@ asgiref==3.2.10
 decorator==4.4.2
 Django==2.2.14
 h5py==2.10.0
-Jinja2==2.11.2
+Jinja2==2.11.3
 langdetect==1.0.8
 MarkupSafe==1.1.1
 mysqlclient==2.0.1
